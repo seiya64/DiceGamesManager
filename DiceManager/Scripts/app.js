@@ -1,22 +1,32 @@
-﻿var tokenKey = 'accessToken';
+﻿var tokenKey = 'accessToken',
+    userNameKey = 'userName',
+    userName = '',
+    login, logout, register;
 
-function ViewModel() {
-    var self = this;
-    
-    self.registerEmail = ko.observable();
-    self.registerPassword = ko.observable();
-    self.registerPassword2 = ko.observable();
+login = function (event) {
+    event.preventDefault();
+    var loginData = {
+        grant_type: 'password',
+        username: $('#txtEmail').val(),
+        password: $('#txtPassword').val()
+    };
 
-    self.loginEmail = ko.observable();
-    self.loginPassword = ko.observable();
-
-    self.user = ko.observable();
-    self.loged = ko.observable();
+    $.ajax({
+        type: 'POST',
+        url: '/Token',
+        data: loginData
+    }).done(function (data) {
+        userName = data.userName;
+        $('#wellcomeMessage').text('Wellcome ' + userName);
+        $('#loginForm').hide();
+        $('#wellcomeMessage').show();
+        $('#btnLogout').show();
+        sessionStorage.setItem(tokenKey, data.access_token);
+        sessionStorage.setItem(userNameKey, userName);
+    }).fail(function () { });
 }
 
-var app = new ViewModel();
-
-app.register = function () {
+register = function () {
     var data = {
         Email: app.registerEmail(),
         Password: app.registerPassword(),
@@ -35,27 +45,7 @@ app.register = function () {
     });
 }
 
-app.login = function () {
-    
-    var loginData = {
-        grant_type: 'password',
-        username: app.loginEmail(),
-        password: app.loginPassword()
-    };
-
-    $.ajax({
-        type: 'POST',
-        url: '/Token',
-        data: loginData
-    }).done(function (data) {
-        alert("Login!");
-        sessionStorage.setItem(tokenKey, data.access_token);
-    }).fail(function () {
-        alert("Error");
-    });
-}
-
-app.logout = function () {
+logout = function () {
     var token = sessionStorage.getItem(tokenKey);
     var headers = {};
     if (token) {
@@ -67,30 +57,16 @@ app.logout = function () {
         url: '/api/Account/Logout',
         headers: headers
     }).done(function (data) {
-        alert("Logout!");
         sessionStorage.removeItem(tokenKey);
+        sessionStorage.removeItem(userNameKey);
     }).fail(function () {
         alert("Error");
     });
 }
 
-ko.applyBindings(app);
-
 $(document).ready(function () {
-    var token = sessionStorage.getItem(tokenKey);
-    var headers = {};
-    if (token) {
-        headers.Authorization = 'Bearer ' + token;
-    }
-
-    $.ajax({
-        type: 'GET',
-        url: '/api/values',
-        headers: headers
-    }).done(function (data) {
-        app.loged = true;
-        app.user(data.userName);
-    }).fail(function () {
-        alert("Error");
-    });
+    $('#wellcomeMessage').hide();
+    $('#btnLogout').hide();
+    $('#btnLogin').on('click', login);
+    $('#btnLogout').on('click', logout);
 });

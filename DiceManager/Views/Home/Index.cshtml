@@ -1,24 +1,27 @@
 ﻿@section Scripts {
     @Scripts.Render("~/bundles/app")
 }
-
 <div class="row">
-  <div class="col-sm-4">
-    <h3 data-bind="text: user"></h3>
-    <h3>Log In</h3>
-    <form data-bind="submit: login">
-      <div class="form-group">
-        <label>Email</label>
-        <input class="form-control" type="text" data-bind="value: loginEmail"/>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input class="form-control" type="password" data-bind="value: loginPassword"/>
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-default">Log In</button>
-        <button data-bind="click: logout" class="btn btn-default">Log Out</button>
-      </div>
-    </form>
-  </div>
+    <div class="col-sm-4">
+        <h3 id="wellcomeMessage"></h3>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-sm-4" id="loginForm">
+        <h3>Log In</h3>
+        <form>
+            <div class="form-group">
+                <label>Email</label>
+                <input class="form-control" type="text" id="txtEmail" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input class="form-control" type="password" id="txtPassword" />
+            </div>
+            <div class="form-group">
+                <a class="btn btn-default" id="btnLogin">Log In</a>
+            </div>
+        </form>
+    </div>
 </div>
