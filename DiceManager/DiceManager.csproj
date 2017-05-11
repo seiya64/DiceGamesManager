@@ -200,7 +200,18 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Creature.cs" />
+    <Compile Include="Models\Dice.cs" />
+    <Compile Include="Models\DiceFace.cs" />
+    <Compile Include="Models\Effect.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\GameRequest.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\PlayerState.cs" />
+    <Compile Include="Models\TableState.cs" />
+    <Compile Include="Models\TableStateItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />

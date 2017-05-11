@@ -1,7 +1,7 @@
 ﻿var tokenKey = 'accessToken',
     userNameKey = 'userName',
     userName = '',
-    login, logout, register;
+    login, logout, register, isAuthenticated;
 
 login = function (event) {
     event.preventDefault();
@@ -19,18 +19,22 @@ login = function (event) {
         userName = data.userName;
         $('#wellcomeMessage').text('Wellcome ' + userName);
         $('#loginForm').hide();
+        $('#aRegister').remove();
         $('#wellcomeMessage').show();
         $('#btnLogout').show();
         sessionStorage.setItem(tokenKey, data.access_token);
         sessionStorage.setItem(userNameKey, userName);
-    }).fail(function () { });
-}
+    }).fail(function (data) {
+        $('#errorMessage').text(data.responseJSON.error_description);
+        $('#errorMessage').show();
+    });
+};
 
 register = function () {
     var data = {
-        Email: app.registerEmail(),
-        Password: app.registerPassword(),
-        ConfirmPassword: app.registerPassword2()
+        Email: $('#txtEmail').val(),
+        Password: $('#txtPassword1').val(),
+        ConfirmPassword: $('#txtPassword2').val()
     };
 
     $.ajax({
@@ -39,15 +43,17 @@ register = function () {
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(data)
     }).done(function (data) {
-        alert("Done!");
-    }).fail(function () {
-        alert("Error");
+        window.location.href = "/";
+    }).fail(function (data) {
+        $('#errorMessage').text(data.responseJSON.Message);
+        $('#errorMessage').show();
     });
-}
+};
 
 logout = function () {
     var token = sessionStorage.getItem(tokenKey);
     var headers = {};
+
     if (token) {
         headers.Authorization = 'Bearer ' + token;
     }
@@ -59,14 +65,32 @@ logout = function () {
     }).done(function (data) {
         sessionStorage.removeItem(tokenKey);
         sessionStorage.removeItem(userNameKey);
-    }).fail(function () {
-        alert("Error");
+        window.location.href = "/";
     });
-}
+};
+
+isAuthenticated = function () {
+    var token = sessionStorage.getItem(tokenKey),
+        userName = sessionStorage.getItem(userNameKey);
+
+    return token && userName;
+};
 
 $(document).ready(function () {
-    $('#wellcomeMessage').hide();
-    $('#btnLogout').hide();
+    var userName = sessionStorage.getItem(userNameKey);
+
     $('#btnLogin').on('click', login);
     $('#btnLogout').on('click', logout);
+    $('#btnRegister').on('click', register);
+
+    if (isAuthenticated()) {
+        $('#loginForm').remove();
+        $('#aRegister').remove();
+        $('#wellcomeMessage').text('Wellcome ' + userName);
+    }
+    else {
+        $('#btnLogout').hide();
+        $('#errorMessage').hide();
+    }
+
 });
